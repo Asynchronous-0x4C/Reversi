@@ -1,0 +1,132 @@
+---
+const lines=8;
+const line=new Array(lines).fill(0);
+const blocks=new Array(lines**2).fill(0);
+---
+
+<div id="outer">
+  <div class="board-outer">
+    <div></div>
+    <div id="theme-row">
+      {
+        line.map((v,i)=>{
+          let x=i;
+          return <input type="text" class="input" data-position={`${x}`} value={x+1}></input>
+        })
+      }
+    </div>
+    <div id="theme-column">
+      {
+        line.map((v,i)=>{
+          let y=i;
+          return <input type="text" class="input" data-position={`${y}`} value={y+1}></input>
+        })
+      }
+    </div>
+    <div id="board">
+      {
+        blocks.map((v,i)=>{
+          let x=i%lines;
+          let y=Math.floor(i/lines);
+          return <div class="block" data-position={`${x},${y}`}></div>
+        })
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+#outer{
+  display:grid;
+  place-items:center;
+  width:100vw;
+  height:100vh;
+}
+
+.board-outer{
+  display:grid;
+  grid-template-rows: 9vmin 72vmin;
+  grid-template-columns: 9vmin 72vmin;
+  width:81vmin;
+  height:81vmin;
+}
+
+#theme-row{
+  display:grid;
+  grid-template-columns:repeat(8,9vmin);
+  grid-template-rows:9vmin;
+}
+
+#theme-column{
+  display:grid;
+  grid-template-columns:9vmin;
+  grid-template-rows:repeat(8,9vmin);
+}
+
+.input{
+  width:9vmin;
+  height:9vmin;
+  border:none;
+  background-color:transparent;
+  text-align:center;
+  font-size:2.5vmin;
+}
+
+#board{
+  display:grid;
+  grid-template-columns:repeat(8,9vmin);
+  grid-template-rows:repeat(8,9vmin);
+  position:relative;
+  width:72vmin;
+  height:72vmin;
+  background: radial-gradient(circle at 25% 25%, #6b6, #5a5);
+}
+
+.block{
+  background-color: transparent;
+  box-sizing: border-box;
+  border: 2px solid #555;
+}
+</style>
+
+<style is:global>
+.stone{
+  border-radius: 50%;
+  width: 80%;
+  height: 80%;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  filter: drop-shadow(5px 5px 3px #0008);
+}
+
+.black{
+  background: radial-gradient(circle at 25% 25%, #585858, #333);
+}
+
+.white{
+  background: radial-gradient(circle at 25% 25%, #f8f8f8, #ddd);
+}
+
+.highlight{
+  border-color: #ff0 !important;
+}
+</style>
+
+<script>
+import {Board} from "../scripts/reversi.ts";
+const tile_elements=document.getElementById("board")!.children as HTMLCollectionOf<HTMLElement>;
+let tiles:HTMLElement[][]=new Array(8);
+for(let i=0;i<8;i++){
+  tiles[i]=new Array(8);
+}
+for(let i=0;i<tile_elements.length;i++){
+  let x=Number(tile_elements[i].dataset.position!.split(",")[0]);
+  let y=Number(tile_elements[i].dataset.position!.split(",")[1]);
+  tiles[x][y]=tile_elements[i];
+}
+const board = new Board(tiles);
+
+
+</script>
